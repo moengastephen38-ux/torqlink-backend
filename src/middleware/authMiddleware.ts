@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
@@ -6,7 +6,7 @@ export interface AuthRequest extends Request {
   userRole?: string;
 }
 
- export const protect = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const protect = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -28,4 +28,15 @@ export interface AuthRequest extends Request {
   } catch {
     res.status(401).json({ error: 'Invalid or expired token' });
   }
+};
+
+// Restrict a route to specific roles (e.g. SELLER, ADMIN)
+export const requireRole = (...allowedRoles: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (!req.userRole || !allowedRoles.includes(req.userRole)) {
+      res.status(403).json({ error: 'You do not have permission to perform this action' });
+      return;
+    }
+    next();
+  };
 };

@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../lib/prisma';
+import { AuthRequest } from '../middleware/authMiddleware';
 
 const generateToken = (userId: string, role: string): string => {
   return jwt.sign(
@@ -89,6 +90,28 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         role: user.role,
       },
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Save the Expo push token for this user
+export const savePushToken = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { pushToken } = req.body;
+
+  if (!pushToken) {
+    res.status(400).json({ error: 'pushToken is required' });
+    return;
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: req.userId },
+      data: { pushToken },
+    });
+
+    res.json({ message: 'Push token saved' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
