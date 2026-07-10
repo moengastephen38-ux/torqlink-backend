@@ -2,7 +2,12 @@
 import prisma from '../lib/prisma';
 import { AuthRequest } from '../middleware/authMiddleware';
 import { getDistanceKm } from '../utils/haversine';
-import { sendPushNotification } from '../services/notifications';
+import {
+  sendPushNotification,
+  notifyJobAccepted,
+  notifyMechanicEnRoute,
+  notifyJobResolved,
+} from '../services/notifications';
 
 export const createRequest = async (req: AuthRequest, res: Response): Promise<void> => {
   const { description, issueType, latitude, longitude, vehicleId } = req.body;
@@ -164,14 +169,13 @@ export const acceptRequest = async (req: AuthRequest, res: Response): Promise<vo
       },
     });
 
-    if (updated?.driver?.pushToken) {
-      sendPushNotification(
-        updated.driver.pushToken,
-        '✅ Mechanic Found!',
-        `${mechanic.name} has accepted your job and is on the way.`,
-        { type: 'JOB_ACCEPTED', requestId: id }
-      );
-    }
+   if (updated?.driver?.pushToken) {
+  await notifyJobAccepted(
+    updated.driver.pushToken,
+    mechanic.name,
+    id
+  );
+} 
 
     res.json({ message: 'Request accepted', serviceRequest: updated });
   } catch (error) {
