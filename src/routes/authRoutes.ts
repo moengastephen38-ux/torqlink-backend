@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { signup, login, getMe, savePushToken } from '../controllers/authController';
+import { signup, login, savePushToken, getMe } from '../controllers/authController';
 import { protect } from '../middleware/authMiddleware';
 
 const router = Router();
 
-// Public Endpoints
+// Public Auth Endpoints
 router.post('/signup', signup);
 router.post('/login', login);
 
-// Protected Endpoints
+// Protected Auth Endpoints
 router.get('/me', protect, getMe);
 router.post('/push-token', protect, savePushToken);
 

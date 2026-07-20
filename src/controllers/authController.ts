@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Role } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { AuthRequest } from '../middleware/authMiddleware';
 
@@ -43,14 +44,20 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     console.log("👉 [3/5] Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    console.log("👉 [4/5] Inserting user into Neon DB via Prisma...");
+    // Runtime Enum Validation Safeguard
+    const normalizedRole = role ? String(role).toUpperCase() : '';
+    const userRole: Role = Object.values(Role).includes(normalizedRole as Role)
+      ? (normalizedRole as Role)
+      : Role.DRIVER;
+
+    console.log(`👉 [4/5] Inserting user into Neon DB with Role: ${userRole}...`);
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
         phone: phone || null,
-        role: role ? String(role).toUpperCase() : 'DRIVER',
+        role: userRole,
       },
     });
 
