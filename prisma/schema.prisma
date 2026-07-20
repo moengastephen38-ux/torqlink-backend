@@ -6,7 +6,6 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
 model User {
   id                 String             @id @default(uuid())
   name               String
@@ -14,16 +13,26 @@ model User {
   password           String
   phone              String?
   role               Role               @default(DRIVER)
+
   verificationStatus VerificationStatus @default(NOT_SUBMITTED)
   isOnline           Boolean            @default(false)
+
   pushToken          String?
+
+  latitude           Float?
+  longitude          Float?
+  lastLocationUpdate DateTime?
+
   laborRate          Float?
   specialization     String[]           @default([])
   toolsOnHand        String[]           @default([])
+
   bio                String?
   avatarUrl          String?
+
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
+
 
   vehicles             Vehicle[]
   driverRequests       ServiceRequest[] @relation("DriverRequests")
@@ -245,11 +254,14 @@ enum IssueType {
 }
 
 enum RequestStatus {
-  PENDING
-  ACCEPTED
-  MECHANIC_EN_ROUTE
-  RESOLVED
-  CANCELLED
+PENDING
+ACCEPTED
+MECHANIC_EN_ROUTE
+ARRIVED
+WORK_IN_PROGRESS
+WAITING_PAYMENT
+RESOLVED
+CANCELLED
 }
 
 enum PaymentStatus {

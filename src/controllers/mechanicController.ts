@@ -200,3 +200,67 @@ export const getMyMechanicStats = async (req: AuthRequest, res: Response): Promi
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+// Update mechanic live GPS location
+export const updateLiveLocation = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const { latitude, longitude } = req.body;
+
+  if (latitude === undefined || longitude === undefined) {
+    res.status(400).json({
+      error: 'Latitude and longitude are required',
+    });
+    return;
+  }
+
+  try {
+    const mechanic = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        role: true,
+        verificationStatus: true,
+      },
+    });
+
+    if (!mechanic) {
+      res.status(404).json({ error: 'Mechanic not found' });
+      return;
+    }
+
+    if (mechanic.role !== 'MECHANIC') {
+      res.status(403).json({
+        error: 'Only mechanics can update location',
+      });
+      return;
+    }
+
+    if (mechanic.verificationStatus !== 'VERIFIED') {
+      res.status(403).json({
+        error: 'Mechanic must be verified',
+      });
+      return;
+    }
+
+    await prisma.user.update({
+      where: {
+        id: req.userId,
+      },
+      data: {
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        lastLocationUpdate: new Date(),
+      },
+    });
+
+    res.json({
+      success: true,
+      message: 'Location updated',
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: 'Internal server error',
+    });
+  }
+};

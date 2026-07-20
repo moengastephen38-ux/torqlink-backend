@@ -184,45 +184,135 @@ export const acceptRequest = async (req: AuthRequest, res: Response): Promise<vo
   }
 };
 
-export const updateStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+export const updateStatus = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   const { status } = req.body;
 
-  const validStatuses = ['MECHANIC_EN_ROUTE', 'RESOLVED', 'CANCELLED'];
+  const validStatuses = [
+    'MECHANIC_EN_ROUTE',
+    'ARRIVED',
+    'WORK_IN_PROGRESS',
+    'WAITING_PAYMENT',
+    'RESOLVED',
+    'CANCELLED',
+  ];
 
   if (!validStatuses.includes(status)) {
-    res.status(400).json({ error: `Status must be one of: ${validStatuses.join(', ')}` });
+    res.status(400).json({
+      error: `Status must be one of: ${validStatuses.join(', ')}`,
+    });
     return;
   }
 
   try {
-    const updated = await prisma.serviceRequest.update({
+    const request = await prisma.serviceRequest.findUnique({
       where: { id },
-      data: { status },
       include: {
-        driver: { select: { pushToken: true } },
+        driver: {
+          select: {
+            pushToken: true,
+          },
+        },
       },
     });
 
-    const statusMessages: any = {
-      MECHANIC_EN_ROUTE: '🚗 Your mechanic is on the way!',
-      RESOLVED: '🎉 Your job has been marked as resolved.',
-      CANCELLED: 'Your job request has been cancelled.',
-    };
-
-    if (updated.driver?.pushToken && statusMessages[status]) {
-      sendPushNotification(
-        updated.driver.pushToken,
-        'TorqLink Update',
-        statusMessages[status],
-        { type: 'STATUS_UPDATE', requestId: id }
-      );
+    if (!request) {
+      res.status(404).json({
+        error: 'Service request not found',
+      });
+      return;
     }
 
-    res.json({ message: `Status updated to ${status}`, serviceRequest: updated });
+    const updated = await prisma.serviceRequest.update({
+      where: { id },
+      data: {
+        status,
+      },
+      include: {
+        vehicle: true,
+        driver: true,
+        mechanic: true,
+      },
+    });
+
+    if (updated.driver?.pushToken) {
+      switch (status) {
+        case 'MECHANIC_EN_ROUTE':
+          await notifyMechanicEnRoute(
+            updated.driver.pushToken,
+            id
+          );
+          break;
+
+        case 'ARRIVED':
+          await sendPushNotification(
+            updated.driver.pushToken,
+            '📍 Mechanic Arrived',
+            'Your mechanic has arrived at your location.',
+            {
+              type: 'ARRIVED',
+              requestId: id,
+            }
+          );
+          break;
+
+        case 'WORK_IN_PROGRESS':
+          await sendPushNotification(
+            updated.driver.pushToken,
+            '🔧 Repair Started',
+            'Your mechanic has started working on your vehicle.',
+            {
+              type: 'WORK_IN_PROGRESS',
+              requestId: id,
+            }
+          );
+          break;
+
+        case 'WAITING_PAYMENT':
+          await sendPushNotification(
+            updated.driver.pushToken,
+            '💳 Payment Required',
+            'Your repair is complete. Please make payment to finish the job.',
+            {
+              type: 'WAITING_PAYMENT',
+              requestId: id,
+            }
+          );
+          break;
+
+        case 'RESOLVED':
+          await notifyJobResolved(
+            updated.driver.pushToken,
+            id
+          );
+          break;
+
+        case 'CANCELLED':
+          await sendPushNotification(
+            updated.driver.pushToken,
+            '❌ Job Cancelled',
+            'Your service request has been cancelled.',
+            {
+              type: 'CANCELLED',
+              requestId: id,
+            }
+          );
+          break;
+      }
+    }
+
+    res.json({
+      message: `Status updated to ${status}`,
+      serviceRequest: updated,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      error: 'Internal server error',
+    });
   }
 };
 

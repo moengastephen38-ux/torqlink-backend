@@ -1,0 +1,1 @@
+{"message":"Login successful","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MWI3MDdlOC01ZmM3LTQ1YjktODFlMy01ZDc5ZDNjMDYwMTciLCJyb2xlIjoiTUVDSEFOSUMiLCJpYXQiOjE3NzkwMjUyMzQsImV4cCI6MTc3OTYzMDAzNH0.M6HX44BXFqHbKkcncixnU4qSuAIjXHzl1U3dh_Jdr94","user":{"id":"71b707e8-5fc7-45b9-81e3-5d79d3c06017","name":"Mike Otieno","email":"mike@torqlink.com","role":"MECHANIC"}}
