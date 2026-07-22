@@ -200,8 +200,8 @@ model County {
   towns     Town[]
   locations Location[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@index([countryId])
 }
@@ -213,33 +213,33 @@ model Town {
   name      String
   locations Location[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@index([countyId])
 }
 
 model Location {
-  id       String  @id @default(uuid())
-  countyId String?
-  county   County? @relation(fields: [countyId], references: [id], onDelete: SetNull)
-  townId   String?
-  town     Town?   @relation(fields: [townId], references: [id], onDelete: SetNull)
-
-  addressLine1 String
-  addressLine2 String?
-  postalCode   String?
-  latitude     Float
-  longitude    Float
-
+  id                String             @id @default(uuid())
+  countyId          String?
+  county            County?            @relation(fields: [countyId], references: [id], onDelete: SetNull)
+  townId            String?
+  town              Town?              @relation(fields: [townId], references: [id], onDelete: SetNull)
+  
+  addressLine1      String
+  addressLine2      String?
+  postalCode        String?
+  latitude          Float
+  longitude         Float
+  
   garages           Garage[]
   partShops         PartShop[]
   dealerships       Dealership[]
   warehouses        Warehouse[]
   emergencyRequests EmergencyRequest[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   @@index([latitude, longitude])
 }
@@ -247,13 +247,13 @@ model Location {
 // ── 2. VEHICLE TAXONOMY ───────────────────────────────────────────────────────
 
 model VehicleMake {
-  id      String         @id @default(uuid())
-  name    String         @unique
-  logoUrl String?
-  models  VehicleModel[]
+  id        String         @id @default(uuid())
+  name      String         @unique
+  logoUrl   String?
+  models    VehicleModel[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model VehicleModel {
@@ -263,8 +263,8 @@ model VehicleModel {
   name        String
   generations VehicleGeneration[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 
   @@unique([makeId, name])
 }
@@ -280,8 +280,8 @@ model VehicleGeneration {
   engines      EngineVariant[]
   partFitments PartFitment[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   @@index([modelId])
 }
@@ -293,8 +293,8 @@ model VehicleTrim {
   name         String
   vehicles     Vehicle[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   @@index([generationId])
 }
@@ -310,8 +310,8 @@ model EngineVariant {
   vehicles     Vehicle[]
   partFitments PartFitment[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   @@index([generationId])
 }
@@ -319,33 +319,33 @@ model EngineVariant {
 // ── 3. USER IDENTITY & PROFILES ───────────────────────────────────────────────
 
 model User {
-  id           String  @id @default(uuid())
-  email        String  @unique
-  phoneNumber  String  @unique
-  passwordHash String
-  firstName    String
-  lastName     String
-  avatarUrl    String?
-
-  driverProfile   DriverProfile?
-  mechanicProfile MechanicProfile?
-  sellerProfile   SellerProfile?
-  adminProfile    AdminProfile?
-
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  phoneNumber         String               @unique
+  passwordHash        String
+  firstName           String
+  lastName            String
+  avatarUrl           String?
+  
+  driverProfile       DriverProfile?
+  mechanicProfile     MechanicProfile?
+  sellerProfile       SellerProfile?
+  adminProfile        AdminProfile?
+  
   organizationMembers OrganizationMember[]
   ownedVehicles       Vehicle[]
   emergencyRequests   EmergencyRequest[]
   wallet              Wallet?
-
+  
   conversationMembers ConversationMember[]
   sentMessages        Message[]
   notifications       Notification[]
   uploadedMedia       Media[]
 
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  version             Int                  @default(1)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
 
   @@index([email])
   @@index([phoneNumber])
@@ -358,24 +358,24 @@ model DriverProfile {
   nationalId         String?            @unique
   verificationStatus VerificationStatus @default(UNVERIFIED)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 }
 
 model MechanicProfile {
-  id                 String             @id @default(uuid())
-  userId             String             @unique
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialties        String[]
-  yearsOfExperience  Int                @default(0)
-  verificationStatus VerificationStatus @default(UNVERIFIED)
-
-  dispatches         Dispatch[]
-  workOrders         WorkOrder[]
+  id                  String              @id @default(uuid())
+  userId              String              @unique
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialties         String[]
+  yearsOfExperience   Int                 @default(0)
+  verificationStatus  VerificationStatus  @default(UNVERIFIED)
+  
+  dispatches          Dispatch[]
+  workOrders          WorkOrder[]
   diagnosticSessions DiagnosticSession[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 }
 
 model SellerProfile {
@@ -385,14 +385,14 @@ model SellerProfile {
   businessName       String?
   verificationStatus VerificationStatus @default(UNVERIFIED)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 }
 
 model AdminProfile {
-  id         String  @id @default(uuid())
-  userId     String  @unique
-  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   department String?
 
   createdAt DateTime @default(now())
@@ -402,28 +402,28 @@ model AdminProfile {
 // ── 4. ORGANIZATION & RBAC ───────────────────────────────────────────────────
 
 model Organization {
-  id     String           @id @default(uuid())
-  name   String
-  type   OrganizationType @default(GARAGE)
-  taxPin String?          @unique
+  id           String                @id @default(uuid())
+  name         String
+  type         OrganizationType      @default(GARAGE)
+  taxPin       String?               @unique
+  
+  settings     OrganizationSettings?
+  members      OrganizationMember[]
+  roles        Role[]
+  vehicles     Vehicle[]
+  garages      Garage[]
+  partShops    PartShop[]
+  dealerships  Dealership[]
+  warehouses   Warehouse[]
+  estimates    Estimate[]
+  workOrders   WorkOrder[]
+  invoices     Invoice[]
+  wallet       Wallet?
 
-  settings    OrganizationSettings?
-  members     OrganizationMember[]
-  roles       Role[]
-  vehicles    Vehicle[]
-  garages     Garage[]
-  partShops   PartShop[]
-  dealerships Dealership[]
-  warehouses  Warehouse[]
-  estimates   Estimate[]
-  workOrders  WorkOrder[]
-  invoices    Invoice[]
-  wallet      Wallet?
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  version      Int                   @default(1)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  deletedAt    DateTime?
 
   @@index([name])
 }
@@ -432,62 +432,62 @@ model OrganizationSettings {
   id             String       @id @default(uuid())
   organizationId String       @unique
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  currency       Currency     @default(KES)
+  taxRate        Decimal      @default(16.00) @db.Decimal(5, 2)
+  autoApproveEst Boolean      @default(false)
 
-  currency       Currency @default(KES)
-  taxRate        Decimal  @default(16.00) @db.Decimal(5, 2)
-  autoApproveEst Boolean  @default(false)
-
-  updatedAt DateTime @updatedAt
+  updatedAt      DateTime     @updatedAt
 }
 
 model OrganizationMember {
   id             String       @id @default(uuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  memberRoles    MemberRole[]
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  memberRoles MemberRole[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@unique([organizationId, userId])
 }
 
 model Role {
-  id             String        @id @default(uuid())
-  organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  name     String
-  isSystem Boolean @default(false)
-
+  id              String           @id @default(uuid())
+  organizationId  String?
+  organization    Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  name            String
+  isSystem        Boolean          @default(false)
+  
   rolePermissions RolePermission[]
   memberRoles     MemberRole[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   @@unique([organizationId, name])
 }
 
 model Permission {
-  id          String  @id @default(uuid())
-  key         String  @unique
-  description String?
-
+  id              String           @id @default(uuid())
+  key             String           @unique
+  description     String?
+  
   rolePermissions RolePermission[]
 
-  createdAt DateTime @default(now())
+  createdAt       DateTime         @default(now())
 }
 
 model RolePermission {
-  id     String @id @default(uuid())
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
+  id           String     @id @default(uuid())
+  roleId       String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
   permissionId String
   permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
@@ -498,9 +498,9 @@ model MemberRole {
   id       String             @id @default(uuid())
   memberId String
   member   OrganizationMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
-
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  roleId   String
+  role     Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([memberId, roleId])
 }
@@ -508,15 +508,15 @@ model MemberRole {
 // ── 5. SHARED MEDIA VAULT ────────────────────────────────────────────────────
 
 model Media {
-  id            String @id @default(uuid())
-  url           String
-  mimeType      String
+  id           String    @id @default(uuid())
+  url          String
+  mimeType     String
   fileSizeBytes Int
-
+  
   uploadedById String?
-  uploadedBy   User?   @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  uploadedBy   User?     @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
 
-  createdAt DateTime @default(now())
+  createdAt    DateTime  @default(now())
 }
 
 // ==============================================================================
@@ -526,37 +526,37 @@ model Media {
 // ── 1. FLEET & CUSTOMER VEHICLES ─────────────────────────────────────────────
 
 model Vehicle {
-  id        String               @id @default(uuid())
-  ownerType VehicleOwnershipType @default(INDIVIDUAL)
-
-  ownerUserId    String?
-  ownerUser      User?         @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
-  organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-
-  trimId          String
-  trim            VehicleTrim    @relation(fields: [trimId], references: [id])
-  engineVariantId String?
-  engineVariant   EngineVariant? @relation(fields: [engineVariantId], references: [id])
-
-  plateNumber      String  @unique
-  vin              String? @unique
-  manufactureYear  Int
-  color            String?
-  currentMileageKm Int     @default(0)
-
-  emergencyRequests      EmergencyRequest[]
-  workOrders             WorkOrder[]
-  listings               VehicleListing[]
-  diagnosticSessions     DiagnosticSession[]
+  id                   String                 @id @default(uuid())
+  ownerType            VehicleOwnershipType   @default(INDIVIDUAL)
+  
+  ownerUserId          String?
+  ownerUser            User?                  @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  organizationId       String?
+  organization         Organization?          @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  
+  trimId               String
+  trim                 VehicleTrim            @relation(fields: [trimId], references: [id])
+  engineVariantId      String?
+  engineVariant        EngineVariant?         @relation(fields: [engineVariantId], references: [id])
+  
+  plateNumber          String                 @unique
+  vin                  String?                @unique
+  manufactureYear      Int
+  color                String?
+  currentMileageKm     Int                    @default(0)
+  
+  emergencyRequests    EmergencyRequest[]
+  workOrders           WorkOrder[]
+  listings             VehicleListing[]
+  diagnosticSessions   DiagnosticSession[]
   maintenancePredictions MaintenancePrediction[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  version              Int                    @default(1)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  deletedAt            DateTime?
+  createdById          String?
+  updatedById          String?
 
   @@index([plateNumber])
   @@index([vin])
@@ -567,28 +567,28 @@ model Vehicle {
 // ── 2. PROVIDERS & WAREHOUSE FACILITIES ───────────────────────────────────────
 
 model Garage {
-  id             String       @id @default(uuid())
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-
+  id              String          @id @default(uuid())
+  organizationId  String
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  locationId      String
+  location        Location        @relation(fields: [locationId], references: [id])
+  
   name            String
   operatingStatus OperatingStatus @default(OPEN)
   bayCapacity     Int             @default(4)
   hourlyLaborRate Decimal         @default(1500.00) @db.Decimal(10, 2)
-
-  warehouses Warehouse[]
-  workOrders WorkOrder[]
-  dispatches Dispatch[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  warehouses      Warehouse[]
+  workOrders      WorkOrder[]
+  dispatches      Dispatch[]
+  
+  version         Int             @default(1)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime?
+  createdById     String?
+  updatedById     String?
 
   @@index([organizationId])
   @@index([locationId])
@@ -598,40 +598,40 @@ model PartShop {
   id             String       @id @default(uuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-
-  name       String
-  warehouses Warehouse[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  locationId     String
+  location       Location     @relation(fields: [locationId], references: [id])
+  
+  name           String
+  warehouses     Warehouse[]
+  
+  version        Int          @default(1)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  createdById    String?
+  updatedById    String?
 
   @@index([organizationId])
 }
 
 model Dealership {
-  id             String       @id @default(uuid())
+  id             String           @id @default(uuid())
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-
-  name     String
-  listings VehicleListing[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  locationId     String
+  location       Location         @relation(fields: [locationId], references: [id])
+  
+  name           String
+  listings       VehicleListing[]
+  
+  version        Int              @default(1)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime?
+  createdById    String?
+  updatedById    String?
 
   @@index([organizationId])
 }
@@ -640,58 +640,58 @@ model Warehouse {
   id             String       @id @default(uuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  garageId   String?
-  garage     Garage?   @relation(fields: [garageId], references: [id], onDelete: SetNull)
-  partShopId String?
-  partShop   PartShop? @relation(fields: [partShopId], references: [id], onDelete: SetNull)
-
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-
-  name String
-  code String @unique
-
-  shelves Shelf[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  garageId       String?
+  garage         Garage?      @relation(fields: [garageId], references: [id], onDelete: SetNull)
+  partShopId     String?
+  partShop       PartShop?    @relation(fields: [partShopId], references: [id], onDelete: SetNull)
+  
+  locationId     String
+  location       Location     @relation(fields: [locationId], references: [id])
+  
+  name           String
+  code           String       @unique
+  
+  shelves        Shelf[]
+  
+  version        Int          @default(1)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  createdById    String?
+  updatedById    String?
 
   @@index([organizationId])
 }
 
 model Shelf {
-  id          String    @id @default(uuid())
+  id          String        @id @default(uuid())
   warehouseId String
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-
-  code String
-  bins BinLocation[]
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  warehouse   Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  
+  code        String
+  bins        BinLocation[]
+  
+  version     Int           @default(1)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
 
   @@unique([warehouseId, code])
 }
 
 model BinLocation {
-  id      String @id @default(uuid())
-  shelfId String
-  shelf   Shelf  @relation(fields: [shelfId], references: [id], onDelete: Cascade)
-
+  id             String          @id @default(uuid())
+  shelfId        String
+  shelf          Shelf           @relation(fields: [shelfId], references: [id], onDelete: Cascade)
+  
   code           String
   inventoryItems InventoryItem[]
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  
+  version        Int             @default(1)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
 
   @@unique([shelfId, code])
 }
@@ -699,28 +699,28 @@ model BinLocation {
 // ── 3. EMERGENCY ROADSIDE DISPATCH ENGINE ─────────────────────────────────────
 
 model EmergencyRequest {
-  id        String @id @default(uuid())
-  reqNumber String @unique
-
-  customerId String
-  customer   User   @relation(fields: [customerId], references: [id])
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
-
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-
+  id          String            @id @default(uuid())
+  reqNumber   String            @unique
+  
+  customerId  String
+  customer    User              @relation(fields: [customerId], references: [id])
+  
+  vehicleId   String
+  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
+  
+  locationId  String
+  location    Location          @relation(fields: [locationId], references: [id])
+  
   severity    EmergencySeverity @default(MEDIUM)
   status      EmergencyStatus   @default(PENDING)
   description String
-
+  
   dispatches  Dispatch[]
   escrowHolds EscrowHold[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  
+  version     Int               @default(1)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   deletedAt   DateTime?
   createdById String?
   updatedById String?
@@ -734,25 +734,25 @@ model Dispatch {
   id                 String           @id @default(uuid())
   emergencyRequestId String
   emergencyRequest   EmergencyRequest @relation(fields: [emergencyRequestId], references: [id], onDelete: Cascade)
-
+  
   assignedMechanicId String?
   assignedMechanic   MechanicProfile? @relation(fields: [assignedMechanicId], references: [id])
-
-  garageId String?
-  garage   Garage? @relation(fields: [garageId], references: [id])
-
-  status      DispatchStatus @default(ASSIGNED)
-  acceptedAt  DateTime?
-  enRouteAt   DateTime?
-  arrivedAt   DateTime?
-  completedAt DateTime?
-
-  workOrders WorkOrder[]
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  
+  garageId           String?
+  garage             Garage?          @relation(fields: [garageId], references: [id])
+  
+  status             DispatchStatus   @default(ASSIGNED)
+  acceptedAt         DateTime?
+  enRouteAt          DateTime?
+  arrivedAt          DateTime?
+  completedAt        DateTime?
+  
+  workOrders         WorkOrder[]
+  
+  version            Int              @default(1)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  deletedAt          DateTime?
 
   @@index([emergencyRequestId])
   @@index([assignedMechanicId])
@@ -762,84 +762,84 @@ model Dispatch {
 // ── 4. WORK ORDERS & SEPARATED FINANCIAL DOCUMENTS ────────────────────────────
 
 model Estimate {
-  id        String @id @default(uuid())
-  estNumber String @unique
-  revision  Int    @default(1)
-
+  id             String         @id @default(uuid())
+  estNumber      String         @unique
+  revision       Int            @default(1)
+  
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  workOrderId String?
-  workOrder   WorkOrder? @relation(fields: [workOrderId], references: [id])
-
-  status      EstimateStatus @default(DRAFT)
-  subtotal    Decimal        @default(0.00) @db.Decimal(18, 2)
-  taxAmount   Decimal        @default(0.00) @db.Decimal(18, 2)
-  totalAmount Decimal        @default(0.00) @db.Decimal(18, 2)
-  currency    Currency       @default(KES)
-
-  items EstimateItem[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  
+  workOrderId    String?
+  workOrder      WorkOrder?     @relation(fields: [workOrderId], references: [id])
+  
+  status         EstimateStatus @default(DRAFT)
+  subtotal       Decimal        @default(0.00) @db.Decimal(18, 2)
+  taxAmount      Decimal        @default(0.00) @db.Decimal(18, 2)
+  totalAmount    Decimal        @default(0.00) @db.Decimal(18, 2)
+  currency       Currency       @default(KES)
+  
+  items          EstimateItem[]
+  
+  version        Int            @default(1)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  deletedAt      DateTime?
+  createdById    String?
+  updatedById    String?
 
   @@index([estNumber])
   @@index([workOrderId])
 }
 
 model EstimateItem {
-  id         String   @id @default(uuid())
-  estimateId String
-  estimate   Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
-
+  id          String   @id @default(uuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  
   description String
-  quantity    Int     @default(1)
-  unitPrice   Decimal @db.Decimal(18, 2)
-  totalPrice  Decimal @db.Decimal(18, 2)
-  isPart      Boolean @default(false)
+  quantity    Int      @default(1)
+  unitPrice   Decimal  @db.Decimal(18, 2)
+  totalPrice  Decimal  @db.Decimal(18, 2)
+  isPart      Boolean  @default(false)
   partItemId  String?
-
-  createdAt DateTime @default(now())
+  
+  createdAt   DateTime @default(now())
 }
 
 model WorkOrder {
-  id       String @id @default(uuid())
-  woNumber String @unique
-
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  garageId String?
-  garage   Garage? @relation(fields: [garageId], references: [id])
-
-  dispatchId String?
-  dispatch   Dispatch? @relation(fields: [dispatchId], references: [id])
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
-
+  id                 String          @id @default(uuid())
+  woNumber           String          @unique
+  
+  organizationId     String
+  organization       Organization    @relation(fields: [organizationId], references: [id])
+  
+  garageId           String?
+  garage             Garage?         @relation(fields: [garageId], references: [id])
+  
+  dispatchId         String?
+  dispatch           Dispatch?       @relation(fields: [dispatchId], references: [id])
+  
+  vehicleId          String
+  vehicle            Vehicle         @relation(fields: [vehicleId], references: [id])
+  
   assignedMechanicId String?
   assignedMechanic   MechanicProfile? @relation(fields: [assignedMechanicId], references: [id])
-
-  status          WorkOrderStatus @default(DRAFT)
-  customerNotes   String?
-  technicianNotes String?
-
-  estimates   Estimate[]
-  items       WorkOrderItem[]
-  invoices    Invoice[]
-  escrowHolds EscrowHold[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  status             WorkOrderStatus @default(DRAFT)
+  customerNotes      String?
+  technicianNotes    String?
+  
+  estimates          Estimate[]
+  items              WorkOrderItem[]
+  invoices           Invoice[]
+  escrowHolds        EscrowHold[]
+  
+  version            Int             @default(1)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  deletedAt          DateTime?
+  createdById        String?
+  updatedById        String?
 
   @@index([woNumber])
   @@index([status])
@@ -850,47 +850,47 @@ model WorkOrderItem {
   id          String    @id @default(uuid())
   workOrderId String
   workOrder   WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
-
+  
   description String
-  quantity    Int     @default(1)
-  unitPrice   Decimal @db.Decimal(18, 2)
-  totalPrice  Decimal @db.Decimal(18, 2)
-  isPart      Boolean @default(false)
+  quantity    Int       @default(1)
+  unitPrice   Decimal   @db.Decimal(18, 2)
+  totalPrice  Decimal   @db.Decimal(18, 2)
+  isPart      Boolean   @default(false)
   partItemId  String?
-
-  createdAt DateTime @default(now())
+  
+  createdAt   DateTime  @default(now())
 }
 
 model Invoice {
-  id        String @id @default(uuid())
-  invNumber String @unique
-
+  id             String        @id @default(uuid())
+  invNumber      String        @unique
+  
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  workOrderId String?
-  workOrder   WorkOrder? @relation(fields: [workOrderId], references: [id])
-
-  status InvoiceStatus @default(DRAFT)
-
-  subtotal       Decimal  @default(0.00) @db.Decimal(18, 2)
-  taxRate        Decimal  @default(16.00) @db.Decimal(5, 2)
-  taxAmount      Decimal  @default(0.00) @db.Decimal(18, 2)
-  withholdingTax Decimal  @default(0.00) @db.Decimal(18, 2)
-  discountAmount Decimal  @default(0.00) @db.Decimal(18, 2)
-  totalAmount    Decimal  @default(0.00) @db.Decimal(18, 2)
-  currency       Currency @default(KES)
-  exchangeRate   Decimal  @default(1.0000) @db.Decimal(10, 4)
-
-  items    InvoiceItem[]
-  payments Payment[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  
+  workOrderId    String?
+  workOrder      WorkOrder?    @relation(fields: [workOrderId], references: [id])
+  
+  status         InvoiceStatus @default(DRAFT)
+  
+  subtotal       Decimal       @default(0.00) @db.Decimal(18, 2)
+  taxRate        Decimal       @default(16.00) @db.Decimal(5, 2)
+  taxAmount      Decimal       @default(0.00) @db.Decimal(18, 2)
+  withholdingTax Decimal       @default(0.00) @db.Decimal(18, 2)
+  discountAmount Decimal       @default(0.00) @db.Decimal(18, 2)
+  totalAmount    Decimal       @default(0.00) @db.Decimal(18, 2)
+  currency       Currency      @default(KES)
+  exchangeRate   Decimal       @default(1.0000) @db.Decimal(10, 4)
+  
+  items          InvoiceItem[]
+  payments       Payment[]
+  
+  version        Int           @default(1)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  createdById    String?
+  updatedById    String?
 
   @@index([invNumber])
   @@index([status])
@@ -898,40 +898,40 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id        String  @id @default(uuid())
-  invoiceId String
-  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-
+  id          String   @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
   description String
-  quantity    Int     @default(1)
-  unitPrice   Decimal @db.Decimal(18, 2)
-  totalPrice  Decimal @db.Decimal(18, 2)
-
-  createdAt DateTime @default(now())
+  quantity    Int      @default(1)
+  unitPrice   Decimal  @db.Decimal(18, 2)
+  totalPrice  Decimal  @db.Decimal(18, 2)
+  
+  createdAt   DateTime @default(now())
 }
 
 model Payment {
-  id        String @id @default(uuid())
-  payNumber String @unique
-
-  invoiceId String?
-  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
-
-  amount   Decimal       @db.Decimal(18, 2)
-  currency Currency      @default(KES)
-  method   PaymentMethod @default(MPESA)
-  status   PaymentStatus @default(PENDING)
-
-  externalReceiptRef String? @unique
-
+  id                 String              @id @default(uuid())
+  payNumber          String              @unique
+  
+  invoiceId          String?
+  invoice            Invoice?            @relation(fields: [invoiceId], references: [id])
+  
+  amount             Decimal             @db.Decimal(18, 2)
+  currency           Currency            @default(KES)
+  method             PaymentMethod       @default(MPESA)
+  status             PaymentStatus       @default(PENDING)
+  
+  externalReceiptRef String?             @unique
+  
   ledgerTransactions LedgerTransaction[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  version            Int                 @default(1)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  deletedAt          DateTime?
+  createdById        String?
+  updatedById        String?
 
   @@index([payNumber])
   @@index([externalReceiptRef])
@@ -941,117 +941,117 @@ model Payment {
 // ── 5. MARKETPLACE & IMMUTABLE ERP INVENTORY ──────────────────────────────────
 
 model PartItem {
-  id          String  @id @default(uuid())
-  sku         String  @unique
-  oemNumber   String?
-  name        String
-  brand       String?
-  description String?
-
+  id             String          @id @default(uuid())
+  sku            String          @unique
+  oemNumber      String?
+  name           String
+  brand          String?
+  description    String?
+  
   inventoryItems InventoryItem[]
   fitments       PartFitment[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  version        Int             @default(1)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
+  createdById    String?
+  updatedById    String?
 
   @@index([sku])
   @@index([oemNumber])
 }
 
 model PartFitment {
-  id         String   @id @default(uuid())
-  partItemId String
-  partItem   PartItem @relation(fields: [partItemId], references: [id], onDelete: Cascade)
-
-  generationId String?
-  generation   VehicleGeneration? @relation(fields: [generationId], references: [id])
-
+  id              String             @id @default(uuid())
+  partItemId      String
+  partItem        PartItem           @relation(fields: [partItemId], references: [id], onDelete: Cascade)
+  
+  generationId    String?
+  generation      VehicleGeneration? @relation(fields: [generationId], references: [id])
+  
   engineVariantId String?
-  engineVariant   EngineVariant? @relation(fields: [engineVariantId], references: [id])
+  engineVariant   EngineVariant?     @relation(fields: [engineVariantId], references: [id])
 
   @@unique([partItemId, generationId, engineVariantId])
 }
 
 model InventoryItem {
-  id         String   @id @default(uuid())
-  partItemId String
-  partItem   PartItem @relation(fields: [partItemId], references: [id])
-
-  binLocationId String
-  binLocation   BinLocation @relation(fields: [binLocationId], references: [id])
-
-  unitCost     Decimal @db.Decimal(18, 2)
-  sellingPrice Decimal @db.Decimal(18, 2)
-
-  balance   InventoryBalance?
-  movements InventoryMovement[]
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id             String              @id @default(uuid())
+  partItemId     String
+  partItem       PartItem            @relation(fields: [partItemId], references: [id])
+  
+  binLocationId  String
+  binLocation    BinLocation         @relation(fields: [binLocationId], references: [id])
+  
+  unitCost       Decimal             @db.Decimal(18, 2)
+  sellingPrice   Decimal             @db.Decimal(18, 2)
+  
+  balance        InventoryBalance?
+  movements      InventoryMovement[]
+  
+  version        Int                 @default(1)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  deletedAt      DateTime?
 
   @@index([partItemId])
   @@index([binLocationId])
 }
 
 model InventoryBalance {
-  id              String        @id @default(uuid())
-  inventoryItemId String        @unique
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
-
-  quantityOnHand    Int @default(0)
-  quantityReserved  Int @default(0)
-  quantityAvailable Int @default(0)
-
-  version   Int      @default(1)
-  updatedAt DateTime @updatedAt
+  id                String        @id @default(uuid())
+  inventoryItemId   String        @unique
+  inventoryItem     InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  
+  quantityOnHand    Int           @default(0)
+  quantityReserved  Int           @default(0)
+  quantityAvailable Int           @default(0)
+  
+  version           Int           @default(1)
+  updatedAt         DateTime      @updatedAt
 }
 
 model InventoryMovement {
-  id              String        @id @default(uuid())
-  inventoryItemId String
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id])
-
-  type           InventoryMovementType
-  quantity       Int
-  previousOnHand Int
-  newOnHand      Int
-
+  id                 String                @id @default(uuid())
+  inventoryItemId    String
+  inventoryItem      InventoryItem         @relation(fields: [inventoryItemId], references: [id])
+  
+  type               InventoryMovementType
+  quantity           Int
+  previousOnHand     Int
+  newOnHand          Int
+  
   referenceDocNumber String?
-
-  createdAt   DateTime @default(now())
-  createdById String?
+  
+  createdAt          DateTime              @default(now())
+  createdById        String?
 
   @@index([inventoryItemId])
   @@index([type])
 }
 
 model VehicleListing {
-  id            String @id @default(uuid())
-  listingNumber String @unique
-
-  dealershipId String
-  dealership   Dealership @relation(fields: [dealershipId], references: [id])
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
-
-  price       Decimal       @db.Decimal(18, 2)
-  currency    Currency      @default(KES)
-  status      ListingStatus @default(DRAFT)
-  description String?
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  id            String        @id @default(uuid())
+  listingNumber String        @unique
+  
+  dealershipId  String
+  dealership    Dealership    @relation(fields: [dealershipId], references: [id])
+  
+  vehicleId     String
+  vehicle       Vehicle       @relation(fields: [vehicleId], references: [id])
+  
+  price         Decimal       @db.Decimal(18, 2)
+  currency      Currency      @default(KES)
+  status        ListingStatus @default(DRAFT)
+  description   String?
+  
+  version       Int           @default(1)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+  createdById   String?
+  updatedById   String?
 
   @@index([listingNumber])
   @@index([status])
@@ -1060,70 +1060,70 @@ model VehicleListing {
 // ── 6. FINANCIAL ESCROW & WALLET LEDGER ───────────────────────────────────────
 
 model Wallet {
-  id             String        @id @default(uuid())
-  organizationId String?       @unique
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  availableBalance Decimal  @default(0.00) @db.Decimal(18, 2)
-  escrowBalance    Decimal  @default(0.00) @db.Decimal(18, 2)
-  currency         Currency @default(KES)
-
-  escrowHolds  EscrowHold[]
-  transactions LedgerTransaction[]
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id               String              @id @default(uuid())
+  organizationId   String?             @unique
+  organization     Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId           String?             @unique
+  user             User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  availableBalance Decimal             @default(0.00) @db.Decimal(18, 2)
+  escrowBalance    Decimal             @default(0.00) @db.Decimal(18, 2)
+  currency         Currency            @default(KES)
+  
+  escrowHolds      EscrowHold[]
+  transactions     LedgerTransaction[]
+  
+  version          Int                 @default(1)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  deletedAt        DateTime?
 
   @@index([organizationId])
   @@index([userId])
 }
 
 model EscrowHold {
-  id       String @id @default(uuid())
-  walletId String
-  wallet   Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
-
+  id                 String            @id @default(uuid())
+  walletId           String
+  wallet             Wallet            @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  
   emergencyRequestId String?
   emergencyRequest   EmergencyRequest? @relation(fields: [emergencyRequestId], references: [id])
-
-  workOrderId String?
-  workOrder   WorkOrder? @relation(fields: [workOrderId], references: [id])
-
-  amount   Decimal      @db.Decimal(18, 2)
-  currency Currency     @default(KES)
-  status   EscrowStatus @default(HELD)
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  
+  workOrderId        String?
+  workOrder          WorkOrder?        @relation(fields: [workOrderId], references: [id])
+  
+  amount             Decimal           @db.Decimal(18, 2)
+  currency           Currency          @default(KES)
+  status             EscrowStatus      @default(HELD)
+  
+  version            Int               @default(1)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  deletedAt          DateTime?
 
   @@index([walletId])
   @@index([status])
 }
 
 model LedgerTransaction {
-  id       String @id @default(uuid())
-  walletId String
-  wallet   Wallet @relation(fields: [walletId], references: [id])
-
-  paymentId String?
-  payment   Payment? @relation(fields: [paymentId], references: [id])
-
+  id            String          @id @default(uuid())
+  walletId      String
+  wallet        Wallet          @relation(fields: [walletId], references: [id])
+  
+  paymentId     String?
+  payment       Payment?        @relation(fields: [paymentId], references: [id])
+  
   direction     LedgerDirection
   amount        Decimal         @db.Decimal(18, 2)
   currency      Currency        @default(KES)
   balanceBefore Decimal         @db.Decimal(18, 2)
   balanceAfter  Decimal         @db.Decimal(18, 2)
-
-  description String
-
-  createdAt DateTime @default(now())
+  
+  description   String
+  
+  createdAt     DateTime        @default(now())
 
   @@index([walletId])
   @@index([direction])
@@ -1136,21 +1136,21 @@ model LedgerTransaction {
 // ── 1. MULTI-PARTY CHAT & MESSAGING ───────────────────────────────────────────
 
 model Conversation {
-  id    String  @id @default(uuid())
-  title String?
-
+  id                 String               @id @default(uuid())
+  title              String?
+  
   emergencyRequestId String?
   workOrderId        String?
-
-  participants ConversationMember[]
-  messages     Message[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
-  updatedById String?
+  
+  participants       ConversationMember[]
+  messages           Message[]
+  
+  version            Int                  @default(1)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  deletedAt          DateTime?
+  createdById        String?
+  updatedById        String?
 
   @@index([emergencyRequestId])
   @@index([workOrderId])
@@ -1160,33 +1160,33 @@ model ConversationMember {
   id             String       @id @default(uuid())
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  joinedAt   DateTime  @default(now())
-  lastReadAt DateTime?
+  
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  joinedAt       DateTime     @default(now())
+  lastReadAt     DateTime?
 
   @@unique([conversationId, userId])
   @@index([userId])
 }
 
 model Message {
-  id             String       @id @default(uuid())
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  senderId String
-  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
-
+  id              String       @id @default(uuid())
+  conversationId  String
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  senderId        String
+  sender          User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  
   content         String
   mediaUrl        String?
-  isSystemMessage Boolean @default(false)
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  isSystemMessage Boolean      @default(false)
+  
+  version         Int          @default(1)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  deletedAt       DateTime?
 
   @@index([conversationId])
   @@index([senderId])
@@ -1195,41 +1195,41 @@ model Message {
 // ── 2. NOTIFICATIONS & MULTI-CHANNEL DELIVERIES ───────────────────────────────
 
 model Notification {
-  id          String @id @default(uuid())
+  id          String                 @id @default(uuid())
   recipientId String
-  recipient   User   @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-
-  title  String
-  body   String
-  data   Json?
-  isRead Boolean   @default(false)
-  readAt DateTime?
-
-  deliveries NotificationDelivery[]
-
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  recipient   User                   @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  
+  title       String
+  body        String
+  data        Json?
+  isRead      Boolean                @default(false)
+  readAt      DateTime?
+  
+  deliveries  NotificationDelivery[]
+  
+  version     Int                    @default(1)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  deletedAt   DateTime?
 
   @@index([recipientId])
   @@index([isRead])
 }
 
 model NotificationDelivery {
-  id             String       @id @default(uuid())
+  id             String               @id @default(uuid())
   notificationId String
-  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
-
-  channel       CommunicationChannel
-  status        DeliveryStatus       @default(PENDING)
-  attempts      Int                  @default(0)
-  externalRef   String?
-  failureReason String?
-
-  sentAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  notification   Notification         @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  
+  channel        CommunicationChannel
+  status         DeliveryStatus       @default(PENDING)
+  attempts       Int                  @default(0)
+  externalRef    String?
+  failureReason  String?
+  
+  sentAt         DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 
   @@index([notificationId])
   @@index([channel, status])
@@ -1238,16 +1238,16 @@ model NotificationDelivery {
 // ── 3. DOMAIN EVENTS (LIGHTWEIGHT EVENT SOURCING) ─────────────────────────────
 
 model DomainEvent {
-  id            String @id @default(uuid())
+  id            String    @id @default(uuid())
   eventName     String
   aggregateType String
   aggregateId   String
-
-  payload     Json
-  published   Boolean   @default(false)
-  publishedAt DateTime?
-
-  occurredAt DateTime @default(now())
+  
+  payload       Json
+  published     Boolean   @default(false)
+  publishedAt   DateTime?
+  
+  occurredAt    DateTime  @default(now())
 
   @@index([eventName])
   @@index([aggregateType, aggregateId])
@@ -1257,21 +1257,21 @@ model DomainEvent {
 // ── 4. INDEPENDENT SEARCH ENGINE INDEX ────────────────────────────────────────
 
 model SearchDocument {
-  id         String @id @default(uuid())
+  id         String   @id @default(uuid())
   entityType String
   entityId   String
-
-  title    String
-  body     String
-  keywords String[]
-
-  latitude  Float?
-  longitude Float?
-  county    String?
-
-  version   Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  
+  title      String
+  body       String
+  keywords   String[]
+  
+  latitude   Float?
+  longitude  Float?
+  county     String?
+  
+  version    Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([entityType, entityId])
   @@index([entityType])
@@ -1281,42 +1281,42 @@ model SearchDocument {
 // ── 5. AI DIAGNOSTICS & TELEMETRY ENGINE ──────────────────────────────────────
 
 model DiagnosticSession {
-  id            String @id @default(uuid())
-  sessionNumber String @unique
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
+  id                String                @id @default(uuid())
+  sessionNumber     String                @unique
+  
+  vehicleId         String
+  vehicle           Vehicle               @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  
   mechanicProfileId String?
-  mechanicProfile   MechanicProfile? @relation(fields: [mechanicProfileId], references: [id], onDelete: SetNull)
-
+  mechanicProfile   MechanicProfile?      @relation(fields: [mechanicProfileId], references: [id], onDelete: SetNull)
+  
   symptomsReported  String[]
   audioRecordingUrl String?
-
-  faultCodes      DiagnosticFaultCode[]
-  recommendations AIRecommendation[]
-
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  createdById String?
+  
+  faultCodes        DiagnosticFaultCode[]
+  recommendations   AIRecommendation[]
+  
+  version           Int                   @default(1)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  deletedAt         DateTime?
+  createdById       String?
 
   @@index([sessionNumber])
   @@index([vehicleId])
 }
 
 model FaultCode {
-  id          String            @id @default(uuid())
-  code        String            @unique
+  id          String                @id @default(uuid())
+  code        String                @unique
   system      String
   description String
-  severity    FaultCodeSeverity @default(WARNING)
-
-  sessions DiagnosticFaultCode[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  severity    FaultCodeSeverity     @default(WARNING)
+  
+  sessions    DiagnosticFaultCode[]
+  
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 
   @@index([code])
 }
@@ -1325,11 +1325,11 @@ model DiagnosticFaultCode {
   id                  String            @id @default(uuid())
   diagnosticSessionId String
   diagnosticSession   DiagnosticSession @relation(fields: [diagnosticSessionId], references: [id], onDelete: Cascade)
-
-  faultCodeId String
-  faultCode   FaultCode @relation(fields: [faultCodeId], references: [id], onDelete: Cascade)
-
-  detectedAt DateTime @default(now())
+  
+  faultCodeId         String
+  faultCode           FaultCode         @relation(fields: [faultCodeId], references: [id], onDelete: Cascade)
+  
+  detectedAt          DateTime          @default(now())
 
   @@unique([diagnosticSessionId, faultCodeId])
 }
@@ -1338,40 +1338,40 @@ model AIRecommendation {
   id                  String            @id @default(uuid())
   diagnosticSessionId String
   diagnosticSession   DiagnosticSession @relation(fields: [diagnosticSessionId], references: [id], onDelete: Cascade)
-
+  
   suggestedAction     String
-  confidenceScore     Decimal  @db.Decimal(5, 4)
+  confidenceScore     Decimal           @db.Decimal(5, 4)
   suggestedPartSkus   String[]
-  estimatedLaborHours Decimal  @db.Decimal(4, 2)
-
-  createdAt DateTime @default(now())
+  estimatedLaborHours Decimal           @db.Decimal(4, 2)
+  
+  createdAt           DateTime          @default(now())
 
   @@index([diagnosticSessionId])
 }
 
 model VINDecode {
-  id          String @id @default(uuid())
-  vin         String @unique
+  id          String   @id @default(uuid())
+  vin         String   @unique
   rawResponse Json
   parsedSpecs Json
-
-  createdAt DateTime @default(now())
+  
+  createdAt   DateTime @default(now())
 
   @@index([vin])
 }
 
 model MaintenancePrediction {
-  id        String  @id @default(uuid())
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
+  id                   String    @id @default(uuid())
+  vehicleId            String
+  vehicle              Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  
   predictedComponent   String
   predictedFailureKm   Int
   confidenceScore      Decimal   @db.Decimal(5, 4)
   recommendedServiceAt DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   @@index([vehicleId])
 }
@@ -1379,21 +1379,21 @@ model MaintenancePrediction {
 // ── 6. AUDIT ENGINE & PLATFORM GOVERNANCE ─────────────────────────────────────
 
 model AuditLog {
-  id        String         @id @default(uuid())
-  actorId   String?
-  actorType AuditActorType @default(USER)
-
+  id         String         @id @default(uuid())
+  actorId    String?
+  actorType  AuditActorType @default(USER)
+  
   action     String
   entityName String
   entityId   String
-
-  before Json?
-  after  Json?
-
-  ipAddress String?
-  userAgent String?
-
-  createdAt DateTime @default(now())
+  
+  before     Json?
+  after      Json?
+  
+  ipAddress  String?
+  userAgent  String?
+  
+  createdAt  DateTime       @default(now())
 
   @@index([entityName, entityId])
   @@index([actorId])
